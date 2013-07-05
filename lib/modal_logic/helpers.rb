@@ -4,13 +4,13 @@ module ModalLogic
       response = {}
       case params[:action]
       when 'new', 'edit'
-        response[:html]  = render_to_string path_to_current_controller_form, layout: false
+        response[:body]  = render_to_string path_to_current_controller_form, layout: false
         response[:title] = opts[:title] || modal_title(model)
 
       when 'create', 'update'
-        if ! model.valid? || ! model.persisted?
-          response[:html]   = render_to_string path_to_current_controller_form
-          response[:errors] = model.errors
+        if ! model.valid? || ! model.persisted? || opts[:errors].present?
+          response[:body]   = render_to_string path_to_current_controller_form
+          response[:errors] = opts[:errors] || model.errors
           response[:flash]  = flash
           response[:title]  = opts[:title] || modal_title(model)
         else
@@ -18,6 +18,7 @@ module ModalLogic
           response[:close] = true
         end
       end
+
       response
     end
 
@@ -27,9 +28,7 @@ module ModalLogic
     end
 
     def path_to_current_controller_form( opts = {} )
-      filename = opts[:filename] || '_form'
-      request_base_path = request.path.split(params[:action].to_s).last
-      File.join(Rails.root, 'app/views', request_base_path, filename )
+      File.join(Rails.root, 'app/views', params[:controller], opts[:filename] || '_form')
     end
   end
 end

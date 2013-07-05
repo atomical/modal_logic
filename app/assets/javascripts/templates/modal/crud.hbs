@@ -1,0 +1,12 @@
+<div class="modal modal-logic hide">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h3 class='modal-title'>{{modal.title}}</h3>
+  </div>
+  <div class="modal-body">
+    {{#if modal.errors.base}}
+      <div class='alert alert-error'>{{{modal.errors.base}}}</div>
+    {{/if}}
+    {{{modal.body}}}
+  </div>
+</div>

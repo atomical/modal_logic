@@ -4,7 +4,6 @@ var ModalLogic,
 
 ModalLogic = (function() {
   function ModalLogic() {
-    this.renderTemplate = __bind(this.renderTemplate, this);
     this.showModal = __bind(this.showModal, this);
     this.createOrUpdateModalContent = __bind(this.createOrUpdateModalContent, this);
     var that;
@@ -14,46 +13,38 @@ ModalLogic = (function() {
       var response;
 
       response = JSON.parse(xhr.responseText);
-      if (response.close != null) {
-        if (response.redirect_location != null) {
-          return window.location = response.redirect_location;
+      if (response != null) {
+        if (response.close != null) {
+          return window.location = response.redirect_location != null ? response.redirect_location : window.location;
         } else {
-          return window.location = window.location;
+          return that.createOrUpdateModalContent(response);
         }
-      } else if (response.html == null) {
+      } else {
         return that.createOrUpdateModalContent({
           title: 'Error',
-          html: 'There was an error.  Please reload the page and try again'
+          body: 'There was an error.  Please reload the page and try again'
         });
-      } else {
-        return that.createOrUpdateModalContent(response);
       }
     });
   }
 
   ModalLogic.prototype.createOrUpdateModalContent = function(context) {
-    var html, modal;
+    var $modal, html;
 
-    modal = $('.modal.modal-logic');
-    if (modal.length === 0) {
-      html = this.renderTemplate({
-        title: context.title,
-        body: context.html
-      });
-      $('body').append(html);
+    html = HandlebarsTemplates['modal/crud']({
+      modal: context
+    });
+    $modal = $('.modal.modal-logic');
+    if ($modal.length > 0) {
+      $modal.modal('hide').replaceWith(html);
     } else {
-      modal.find('.modal-body').empty().append(context.html);
-      modal.find('.modal-header > .modal-title').empty().append(context.title);
+      $('body').append(html);
     }
     return this.showModal();
   };
 
   ModalLogic.prototype.showModal = function() {
     return $('.modal.modal-logic').modal('show');
-  };
-
-  ModalLogic.prototype.renderTemplate = function(context) {
-    return "<div class=\"modal modal-logic hide fade\">\n  <div class=\"modal-header\">\n    <button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-hidden=\"true\">×</button>\n    <h3 class='modal-title'>" + context.title + "</h3>\n  </div>\n  <div class=\"modal-body\">\n    " + context.body + "\n  </div>\n</div>";
   };
 
   return ModalLogic;
