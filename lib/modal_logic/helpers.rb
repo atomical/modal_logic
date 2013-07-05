@@ -3,8 +3,12 @@ module ModalLogic
     def modal_form_response( model, opts = {})
       response = {}
       case params[:action]
-      when 'create'
-        if ! model.valid?
+      when 'new', 'edit'
+        response[:html]  = render_to_string path_to_current_controller_form, layout: false
+        response[:title] = opts[:title] || modal_title(model)
+
+      when 'create', 'update'
+        if ! model.valid? || ! model.persisted?
           response[:html]   = render_to_string path_to_current_controller_form
           response[:errors] = model.errors
           response[:flash]  = flash
@@ -13,9 +17,6 @@ module ModalLogic
           response[:redirect_location] = opts[:redirect_location] if opts[:redirect_location]
           response[:close] = true
         end
-      when 'new'
-        response[:html]  = render_to_string path_to_current_controller_form, layout: false
-        response[:title] = opts[:title] || modal_title(model)
       end
       response
     end
