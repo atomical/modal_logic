@@ -9,7 +9,7 @@ module ModalLogic
 
       when 'create', 'update'
         if ! model.valid? || ! model.persisted? || opts[:errors].present?
-          response[:body]   = render_to_string path_to_current_controller_form
+          response[:body]   = render_to_string path_to_current_controller_form, layout: false
           response[:errors] = opts[:errors] || model.errors
           response[:flash]  = flash
           response[:title]  = opts[:title] || modal_title(model)
