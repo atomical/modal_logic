@@ -1,4 +1,6 @@
-class ModalLogic
+exports = exports ? window
+
+exports.ModalLogic = class ModalLogic
   constructor: ->
     that = @
     $('a[data-remote][modal],form[data-remote][modal]').live 'ajax:complete', (jq_event, xhr) ->
