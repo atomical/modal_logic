@@ -28,7 +28,7 @@ module ModalLogic
     end
 
     def path_to_current_controller_form( opts = {} )
-      File.join(Rails.root, 'app/views', params[:controller], opts[:filename] || '_form')
+      File.join(params[:controller], opts[:filename] || '_form')
     end
   end
 end
